@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Simple Sidebar - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles  -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- font awesome -->
+    <link rel="stylesheet" href="css/all.css">
+</head>
+
+<body>
+
+    <div class="d-flex wrapper toggled">
+        <!-- sidebar -->
+        <div class="sidebar-wrapper bg-light">
+            <div class="sidebar-heading">Menu
+
+            </div>
+            <div class="dropdown-divider border-dark"></div>
+            <div class="list-group list-group-flush sidebar-menu mt-4">
+                <!-- sidebar item -->
+
+                <a href="userAdmin.html" class="sidebar-item ">
+                    <i class="fas fa-users mr-2"></i>
+                    Users</a>
+                <a href="index.html" class="sidebar-item  ">
+                    <i class="fas fa-users mr-2"></i>
+                    Aspirations</a>
+                <a href="#" class="sidebar-item active ">
+                    <i class="fas fa-users mr-2"></i>
+                    Categories</a>
+
+                <!-- end sidebar item -->
+
+            </div>
+
+        </div>
+        <!-- end sidebar -->
+        <!-- content -->
+        <div class="page-content-wrapper ">
+            <!-- navbar -->
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light container">
+                <!-- button sidebar -->
+                <div id="menu-toggle" class="d-flex mr-4 ml-2 menu-toggle flex-row">
+                    <div class="burger p-2">
+                    </div>
+                    <div class="burger border-primary p-2">
+                    </div>
+                    <div class="burger  p-2">
+                    </div>
+                </div>
+                <!-- end button sidebar -->
+                <!-- nav link -->
+                <a class="navbar-brand" href="#">Navbar</a>
+
+                <!-- endnav link -->
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse nav-item  " id="navbarNavAltMarkup">
+                    <!-- nav -->
+                    <div class="navbar-nav">
+
+                        <a href="" class="nav-item nav-link mr-2">Beranda</a>
+                        <a href="" class="nav-item nav-link">Aspirasi</a>
+                    </div>
+                    <!-- end nav -->
+                    <div class="dropdown pl-2 ml-auto ">
+                        <p class="dropdown-toggle m-auto" id="dropdownMenuButton" data-toggle="dropdown">
+                            Kepo
+                        </p>
+                        <div class="dropdown-menu dropdown-menu-md-right">
+                            <a class="dropdown-item"><i class`="fas fa-user fa-fw mr-2"></i> My Aspiraton </a>
+                            <a class="dropdown-item"> <i class="fas fa-fw fa-lightbulb text-warning"></i> My
+                                Aspiration</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger"> <i class="fas fa-fw fa-sign-out-alt mr-2"></i>
+                                Logout</a>
+                        </div>
+                    </div>
+            </nav>
+            <!-- end navbar -->
+            <!-- main -->
+            <div class="container-fluid pl-5 pr-5 mt-3">
+                <h1 class="title my-3 ">Categories</h1>
+                <hr>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Create Category
+                </button>
+                <div class="col-8 my-3">
+                    <table class="table table-hover  table-striped text-center">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Icons</th>
+                                <th scope="col">Categories</th>
+                                <th scope="col">Active</th>
+                                <th scope="col">action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td> <img class="img-circle m-auto img-small" src="img/pendidikan.png" alt="">
+                                </td>
+                                <td>Pendidikan</td>
+                                <td><i class="fas fa-check"></i></td>
+                                <td><a href="" class="btn btn-danger font-sm">Delete</a></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td> <img class="img-circle m-auto img-small" src="img/ekonomi.jfif" alt="">
+                                </td>
+                                <td>Ekonomi</td>
+                                <td><i class="fas fa-times"></i></td>
+
+                                <td><a href="" class="btn btn-danger font-sm ">Delete</a></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end main -->
+            <!-- footer -->
+            <footer class="">
+
+            </footer>
+            <!-- end footer -->
+
+        </div>
+        <!-- end content -->
+    </div>
+
+    <!-- /#wrapper -->
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="categoryName"> Category Name</label>
+                            <input type="text" name="name" id="categoryName" class=" form-control">
+                        </div>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" accept="image/png,image/jpg,image/jpeg"
+                                id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose Icon Image</label>
+                        </div>
+                        <div class="custom-control mt-2 custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">Active</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/all.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $(".wrapper").toggleClass("toggled");
+            $(".burger").toggleClass("hideSidebar");
+        });
+        $("#like").click(e => {
+            $("#like").addClass("far")
+            $("#like").removeClass("fas")
+        })
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
