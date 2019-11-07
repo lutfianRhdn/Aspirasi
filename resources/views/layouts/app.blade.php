@@ -11,7 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-
+    <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -19,93 +19,72 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/all.css') }}">
 
+    <style type="text/css">
+        .container{
+            min-height: 100vh;
+        }
+    </style>
 </head>
 <body>
     <div class="d-flex wrapper toggled">
 
-        @if(auth()->check())
         <!-- sidebar -->
-        <div class="sidebar-wrapper bg-light">
-            <div class="sidebar-heading">Menu
-
-            </div>
-            <div class="dropdown-divider border-dark"></div>
-            <div class="list-group list-group-flush sidebar-menu mt-4">
-
-                <!-- sidebar item -->
-                <a href="userAdmin.html" class="sidebar-item ">
-                    <i class="fas fa-users mr-2"></i>
-                    Users</a>
-                <a href="#" class="sidebar-item active ">
-                    <i class="fas fa-users mr-2"></i>
-                    Aspirations</a>
-                <a href="category.html" class="sidebar-item ">
-                    <i class="fas fa-users mr-2"></i>
-                    Categories</a>
-             <!-- end sidebar item -->
-
-            </div>
-
-        </div>
-        <!-- end sidebar -->
+        @if(auth()->check() AND auth()->user()->role_id == 1 AND request()->segment(1) == 'admin' )
+            @include('layouts.sidebar')
         @endif
+        <!-- end sidebar -->
 
         <!-- container -->
-        <div class="page-content-wrapper">
+        <div class="page-content-wrapper bg-white">
             
             <!-- navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
-                <a class="navbar-brand" href="#">Navbar</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse d-md-flex align-items-center justify-content-between"
-                    id="navbarNavAltMarkup">
-                    <!-- nav left -->
-                    <div class="navbar-nav">
-
-                        <a class="nav-item nav-link text-center active" href="#">Beranda</a>
-                        <a class="nav-item nav-link text-center" href="aspiration.html">Aspiration</a>
-                    </div>
-                    <!-- end nav left -->
-                    <!-- nav right -->
-                    <div class="d-flex align-items-center">
-                        <div class="dropdown mr-2 ">
-                            <i class="dropdown-toggle dropdown-toggle-hide fas fa-search" id="dropdownMenuButton"
-                                data-toggle="dropdown">
-                            </i>
-                            <div class="dropdown-menu-md-right  dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <form class="form-inline my-2 w-75v my-lg-0 dropdown-item">
-                                    <input class="form-control mr-sm-2" type="search" placeholder="Search"
-                                        aria-label="Search">
-                                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="dropdown pl-2 border-left border-dark ">
-                            <a class=" btn btn-gradient m-auto border-0" href="makeAspiration.html">
-                                Make Aspirations
-                            </a>
-
-                        </div>
-
-                    </div>
-                    <!-- nav right -->
-                </div>
-
-            </nav>
+            @include('layouts.nav')
             <!-- end nav -->
             
             <!-- main -->
-            <div class="container  p-3 mt-5">
-               @yield('content')
-            </div>
+                
+            @yield('content')
             <!-- end main -->
             
             <!-- footer -->
-            <footer class="">
+            <footer class=" footer w-100 text-white-50 bg-dark bottom-10 mt-5">
+                <div class="d-flex p-5 justify-content-between">
+
+                    <div class="ml-md-5">
+                        <h4>Hubungi kami</h4>
+                        <hr class="w-100 border-white-50">
+                        <div class=" d-flex flex-column ">
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-instagram fa-1x mr-2"></i>
+                                <a href="" class="text-white-50">instagram</a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-whatsapp fa-1x mr-2"></i>
+                                <a href="" class="text-white-50">whatsapp</a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-envelope fa-1x mr-2"></i>
+                                <a href="" class="text-white-50">Email</a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fab fa-line fa-1x mr-2"></i>
+                                <a href="" class="text-white-50">line</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mr-md-5">
+
+                        <h4>Tentang kami</h4>
+                        <hr class="w-100 border-white-50">
+                        <div class=" d-flex flex-column ml-3">
+                            <a href="" class="text-white-50">instagram</a>
+                            <a href="" class="text-white-50">whatsapp</a>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-center  mt-4 mb-0"> &copy;Sans Skuy CopyRight 2019</p>
 
             </footer>
             <!-- end footer -->
@@ -113,7 +92,6 @@
         </div>
         <!-- end content -->
     </div>
-
     <!-- /#wrapper -->
 
     <!-- Modal delete -->

@@ -31,13 +31,12 @@ class AspirationController extends Controller
 
     /* RESOURCE METHOD*/
     public function index(){
-        
         // get the data from between 7 days back
-        $aspirations = Aspiration::withCount('upvotes')->orderBy('upvotes_count', 'DESC')->with('aspirationCategory')->get();
+        $aspirations = Aspiration::withCount('upvotes')->orderBy('upvotes_count', 'DESC')->limit(5)->get();
 
         // filter the data with many likes
         $popularAspirations = $this->popularAspirations($aspirations);
-        
+
         
         return view('aspiration.index', compact('popularAspirations') );
     }
@@ -49,11 +48,13 @@ class AspirationController extends Controller
     }
 
     public function store(){
-
+        // dd(request());
     	Aspiration::create(request()->validate([
 	    		'aspiration_category_id' => 'required',
 	    		'title' => 'required' ,
-	    		'aspiration' => 'required'
+                'user_id' => 'required',
+	    		'aspiration' => 'required',
+                'is_anonim' => 'required'
     		])
     	);
 
@@ -74,24 +75,52 @@ class AspirationController extends Controller
 
         $categories = AspirationCategory::with('aspirations')->get();
 
-        $aspirations = Aspiration::withCount('upvotes')->with('aspirationCategory')->get();
-        
+        $aspirations = new Aspiration();
+
+        $aspirations = $aspirations->withCount('upvotes');
+        $queries = [];
+
         if(request()->has('c')){
-            $aspirations = Aspiration::where('aspiration_category_id', request('c'))->withCount('upvotes')->with('aspirationCategory')->orderBy('created_at', 'DESC')->get();
-        
+            $aspirations = $aspirations->where('aspiration_category_id', request('c'));
+            $queries['c'] = request('c');
         }
 
         if(request()->has('o')){
-            $aspirations = $this->popularAspirations($aspirations);
-            $aspirations = new Aspiration;
-            $aspirations = $aspirations->withCount('upvotes')->where('aspiration_category_id', request('c'))->orderBy('upvotes_count', 'DESC')->get();
+
+            if(request('o') == 'popular'){
+                $popularAspirations = [];
+                
+                foreach ($aspirations as $aspiration) {
+                    
+                    if($aspiration->created_at > now()->addDays(-7)){
+                        $popularAspirations[] = $aspiration;
+                    }
+                    $aspirations = $popularAspirations->orderBy('upvotes_count', 'DESC');   
+            
+                }
+            }
+
+            if(request('o') == 'new'){
+                $aspirations = $aspirations->orderBy('created_at', 'DESC');
+                       
+            }
+
+            if(request('o') == 'accepted'){
+                $aspirations = $aspirations->where('is_accepted', 1);
+                       
+            }
+
+            
+        
         }
 
-        if(request()->has('new')){
-            $aspirations = Aspiration::where('aspiration_category_id', request('c'))->withCount('upvotes')->with('aspirationCategory')->orderBy('created_at', 'DESC')->get();
-            
-        }
-        // dd($aspirations);
+
+            $queries['o'] = request('o');
+
+        $aspirations = $aspirations->paginate(5)->appends($queries);
+
+
+        // dd(request()->segment(1));
         return view('aspiration.beranda', compact('aspirations', 'categories'));
     }
 
@@ -104,4 +133,7 @@ class AspirationController extends Controller
         return redirect()->back();
     }
 
+    public function profile(){
+        return "Profile";
+    }
 }

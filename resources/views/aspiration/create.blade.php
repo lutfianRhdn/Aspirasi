@@ -1,47 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-	<div class="container">
-		<div class="row">
-			<div class="col text-center">
-				<h1>Aspirations Create</h1>
-			</div>	
-		</div>
+<main>
+	<div class="contaner my-5 mx-5">
+	    <div class="col-md-7 m-auto">
 
-		<form method="POST" action="{{ route('aspirations.store') }}">
-			@csrf
-			<div class="form-group row">
-				<lable class="form-controll col-md-3">Title</lable>
-				<input class="form-controll col-md-6 col-offset-3" name="title"></input>
-				
-				<!-- validatoin -->
-				@if($errors->has('title'))
-					<div class="text-danger">{{ $errors->first('title') }}</div>
-				@endif
-			</div>
+	        <form action="{{ route('aspirations.store') }}" method="POST">
+	        	@csrf
 
+	        	<input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+	            <div class="form-group">
+	                <label for="Title">Title </label>
+	                <input type="text" class="form-control" id="Title" aria-describedby="emailHelp"
+	                    placeholder="Enter Title" name="title">
+	            </div>
 
-			<div class="form-group row">
-				<lable class="form-controll col-md-3">Aspiration</lable>
-				<textarea class="form-controll col-md-6 col-offset-3" name="aspiration"></textarea>
-			</div>
+	            <div class="form-group">
+	                <label for="aspiration">Aspiration </label>
+	                <textarea type="email" class="form-control" id="aspiration" aria-describedby="emailHelp"
+	                    placeholder="Enter Aspiration" name="aspiration"></textarea>
+	            </div>
+	            <div class="form-group">
+	                <label for="category"> Categories</label>
+	                <select class="custom-select" id="category" required name="aspiration_category_id">
+	                    @foreach($categories as $category)
+	                    <option value="{{ $category->id }}">{{ $category->category }}</option>
+	                    @endforeach
+	                </select>
+	            </div>
 
-			<div class="form-group row">
-				<lable class="form-controll col-md-3">Category</lable>
-				<select class="form-controll col-md-6 col-offset-3" name="aspiration_category_id">
-					@foreach($categories as $category)
-					<option value="{{ $category->id }}">{{ $category->category }}</option>
-					@endforeach
-				</select>
-			</div>
+	            <label class="d-block" for="inlineFormCustomSelect">Visible</label>
+	            <div class="btn-group btn-group-toggle " data-toggle="buttons">
+	                <label class="btn btn-info">
+	                    <input type="radio" name="is_anonim" id="option1" autocomplete="off" checked value="0"> 
+	                    Public
+	                </label>
+	                <label class="btn btn-info">
+	                    <input type="radio" name="is_anonim" id="option2" autocomplete="off" value="1"> Private
+	                </label>
+	            </div>
+	            <div class="custom-control custom-checkbox mt-3">
+	                <input type="checkbox" class="custom-control-input" id="customCheck1">
+	                <label class="custom-control-label" for="customCheck1">Accept Police and bla bla bla</label>
+	            </div>
+	            <button type="submit" class="btn mt-3 btn-primary" name="submit">Submit</button>
 
-			<div class="form-group row">
-				<div class="col-md-12 text-end">
-					<button class="btn btn-primary" type="submit">Save</button>
-				</div>				
-			</div>	
-		</form>
+	        </form>
+	    </div>
 	</div>
+
+</main>
 
 
 

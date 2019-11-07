@@ -13,18 +13,28 @@
 
 
 //default
-Route::view('/', 'welcome');
-Route::get('/home', 'HomeController@index')->name('home');
+Route::redirect('/home', '/')->name('home');
 
 // auth
 Auth::routes();
 
-//aspiration
-route::group([], function(){
-	Route::get('/aspirations', 'AspirationController@index')->name('aspirations.index');
+/* ASPIRATIONS or USERS */
+Route::get('/', 'AspirationController@index')->name('aspirations.index');
+
+route::group(['auth'] , function(){
 	Route::get('/aspirations/create', 'AspirationController@create')->name('aspirations.create');
 	Route::post('/aspirations/store', 'AspirationController@store')->name('aspirations.store');
 	Route::get('/aspirations/{aspiration}/delete', 'AspirationController@destroy')->name('aspirations.delete');
 	Route::post('/aspirations/upvote', 'AspirationController@upvote')->name('aspirations.upvote');
-	Route::get('/aspiratins/beranda', 'AspirationController@beranda')->name('aspirations.beranda');
+	Route::get('/aspirations/beranda', 'AspirationController@beranda')->name('aspirations.beranda');
+	Route::get('aspirations/profile', 'AspirationController@profile')->name('aspirations.profile');
 });
+
+/* ADMINS */
+Route::group(['admin'], function(){
+	Route::get('/admin', 'AdminController@index')->name('admins.index');
+	Route::resource('admin/menus', 'MenuController');
+	Route::resource('admin/sub-menus', 'SubMenuController');
+	Route::resource('admin/users', 'UserController');
+});
+

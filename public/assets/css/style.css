@@ -8,6 +8,9 @@ body {
     overflow-x: hidden;
 }
 
+#menu-toggle{
+    display: none;
+}
 .sidebar-wrapper {
     min-height: 100vh;
     margin-left: -15rem;
@@ -41,6 +44,7 @@ body {
     padding: 1rem 2rem;
     transition: 1s ease;
     color: rgba(0, 0, 0, 0.815);
+
 }
 
 .sidebar-item:hover {

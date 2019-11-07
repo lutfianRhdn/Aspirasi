@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 
 $factory->define(AspirationCategory::class, function (Faker $faker) {
     return [
-        'category' => $faker->word,
+        'category' => ['Pendidikan', 'Teknologi', 'Infrastruktur', 'Keuangan'][rand(0,3)],
 
     ];
 });

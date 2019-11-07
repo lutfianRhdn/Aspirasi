@@ -16,6 +16,7 @@ class CreateAspirationsTable extends Migration
         Schema::create('aspirations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('aspiration_category_id');
+            $table->unsignedBigInteger('user_id');
             $table->string('title', 255);
             $table->text('aspiration');
             $table->smallInteger('is_anonim')->nullable();

@@ -1,61 +1,82 @@
 @extends('layouts.app')
 
 @section('content')
-	<div class="container">
-		<div class="row">
-			<div class="col text-center">
-				<h1>Beranda</h1>
-			</div>	
-		</div>
-		<hr>
+<div class="container  p-3 mt-5">
+	@include('layouts.category')
 
-		<div class="row mb-2">
-			<div class="col text-center">CATEGORY</div>
-		</div>
-		<div class="row text-center d-flex flex-row justify-content-center">
-			<div class="category"><a href="{{ route('aspirations.beranda') }}" class="{{ request()->has('c') ? '' : 'active-link'}}">default</a></div>
-			@foreach($categories as $category)
-				<div class="category "><a href="{{ route('aspirations.beranda', ['c' => $category->id])}}" class="{{ $category->id == request('c') ? 'active-link' : '' }}">{{ $category->category }}</a></div>
-			@endforeach
-		</div>
+	<!-- options -->
+	 <div class=" mt-4">
+        <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
+             <a class="nav-item nav-link" id="nav-contact-tab"  href="{{ route('aspirations.beranda', ['o' => 'popular', 'c' => request('c')] ) }}"
+                            role="tab" aria-controls="nav-contact" aria-selected="false">Populer</a>
 
-		<div class="row mt-5 mb-2">
-			<div class="col text-center d-flex justify-content-center">
-				<div class="category"><a href="{{ route('aspirations.beranda', ['c' => request('c'), 'o' => 'popular']) }}">POPULAR</a></div>
-				<div class="category"><a href="{{ route('aspirations.beranda', ['c' => request('c'), 'o' => 'new']) }}">NEWEST</a></div>
-				<div class="category"><a href="{{ route('aspirations.beranda', ['c' => request('c'), 'o' => 'acc']) }}">ACCEPTED</a></div>
-			</div>
-		</div>
+            <a class="nav-item nav-link" href="{{ route('aspirations.beranda', ['o' => 'new', 'c' => request('c')] ) }}"
+                role="tab" aria-controls="nav-profile" aria-selected="false">Terbaru</a>
+            <a class="nav-item nav-link" href="{{ route('aspirations.beranda', ['o' => 'accepted', 'c' => request('c')]) }}"
+                role="tab" aria-controls="nav-contact" aria-selected="true">Tercapai</a>
+        </div>
+    </div>
+	<!-- end of options -->
 
-		@foreach($aspirations as $aspiration)
-		<div class="content my-5">
-			<div class="row">
-				<div class="col text-right">
-					{{ $aspiration->created_at->diffForHumans() }}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 text-center"><h1>{{ $aspiration->title }}</h1></div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-8 offset-2 text-center">
-					{{ substr($aspiration->aspiration, 0, random_int(256, 512)) }}
-					<a href="">see more</a>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6 text-danger"><a href="{{ route('aspirations.delete', $aspiration->id) }}" class="text-danger">DELETE</a></div>
-				
-				<form class="col-md-6 text-right" method="POST" action="{{ route('aspirations.upvote') }}">
-					@csrf
-					<input type="hidden" name="aspiration_id" value="{{ $aspiration->id }}">
-					{{ $aspiration->upvotes->count()}}|| <button >upvote</button>
-				</form>
-			</div>
-		</div>
-		@endforeach
+	@foreach($aspirations as $aspiration)
+    <!-- card -->
+    <div class="tab-content border h-100 p-4 my-5" id="nav-tabContent">
+        <!-- terbaru tab -->
+        <div class="tab-pane fade text-black show active" id="nav-home" role="tabpanel"
+            aria-labelledby="nav-home-tab">
 
 
-	</div>
+            <!-- aspiration card -->
+            <div class="card card-hover">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="d-flex align-self-center">
+                        <img class="img-circle img-small" src="{{ asset('assets/img/pendidikan.png') }}" alt="">
+                        <h5 class=" mt-auto mb-auto ml-2 text-info"> {{ $aspiration->aspirationCategory->category }}</h5>
+                    </div>
+
+                    <div>
+                        {{ $aspiration->created_at->diffForHumans() }}
+                    </div>
+                </div>
+                <div class="card-body" id="">
+                    <h5 class="card-title">{{ $aspiration->title }}</h5>
+                    <!-- text aspiration -->
+                    <span class="more card-text">
+                        {{ substr($aspiration->aspiration, 256,512)  }}<a href=""> read more...</a>
+                    </span>
+                    <!-- end text Aspiration -->
+                    <div class="divider"></div>
+                    <div class="d-flex">
+
+                        <!-- upvote -->
+                        <div class="d-flex flex-column align-items-center">
+
+                            <i class="far  fa-thumbs-up text-danger" id="like"></i>
+                            <p class=" text-small text-black">{{ $aspiration->upvotes_count }} upvotes</p>
+                        </div>
+                        <!-- end of upvots -->
+
+                        <!-- comment -->
+                        <!-- <div class="d-flex flex-column ml-2 align-items-center">
+
+                            <a href="">
+                                <i class="far fa-comment text-primary"></i>
+                            </a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <!-- end card -->
+        </div>
+        <!-- terPopuler tab -->
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            ...
+        </div>
+        <!-- terWujud tab -->
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+            ...
+        </div>
+    </div>
+    @endforeach
+</div>
 @endsection
