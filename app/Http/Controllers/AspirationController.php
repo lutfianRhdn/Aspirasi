@@ -28,6 +28,8 @@ class AspirationController extends Controller
         foreach ($aspirations as $aspiration) {
             if ($aspiration->created_at > now()->addDays(-7)) {
                 $popularAspirations[] = $aspiration;
+            } else {
+                $popularAspirations[] = $aspiration;
             }
         }
 
@@ -151,12 +153,14 @@ class AspirationController extends Controller
             'pesan' => 'required',
         ]);
 
+
         $data = Upvote::create([
 
             'aspiration_id' => $aspiration->id,
             'user_id' => auth()->user()->id
         ]);
 
+        // dd($data);
         $count = Upvote::Where('aspiration_id', $data->aspiration->id);
 
         // if like >= SEND EMAIL HERE

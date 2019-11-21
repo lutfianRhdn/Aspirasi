@@ -145,7 +145,9 @@ main {
 .bg-gradient {
     /* height: 100%; */
     width: 100%;
-    animation: bgAnimate 10s ease-in alternate infinite;
+    background-image: linear-gradient(120deg, #92fe9d, #00c9ff, #92fe9d, #00c9ff);
+    background-size: 400% 400%;
+    animation: bg-animate 8s ease alternate infinite;
 }
 
 .border-radius {
@@ -198,6 +200,9 @@ main {
     height: 75vh;
 }
 
+.img-more {
+    width: 10vw;
+}
 
 .quots {
     font-family: 'Merienda', cursive;
@@ -380,6 +385,11 @@ main {
     .text-about {
         font-size: .7rem;
     }
+
+    .img-more {
+        width: 15vw;
+    }
+
 
     .sidebar-wrapper {
         margin-left: 0;

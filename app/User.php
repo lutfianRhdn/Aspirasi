@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Role;
 use App\Aspiration;
 use App\Comment;
+use App\Upvote;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -52,13 +54,29 @@ class User extends Authenticatable implements MustVerifyEmail
     //     return $this->belongsTo(Role::class);
     // }
 
-    public function aspirations(){
+    public function aspirations()
+    {
         return $this->hasMany(Aspiration::class);
     }
 
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-}   
+    public function upvotes()
+    {
+        return $this->hasMany(Upvote::class);
+    }
+
+    public function delete()
+    {
+        // delete all related photos 
+        $this->aspirations()->delete();
+        $this->aspirations()->delete();
+        $this->upvotes()->delete();
+
+        return parent::delete();
+    }
+}

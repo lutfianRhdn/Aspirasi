@@ -40,9 +40,11 @@
     {{-- {{ $aspirations->links() }} --}}
     <!-- end link -->
     <div id="test"></div>
-    <button id="load-more">more...</button>
-    
-    <img src="{{ asset('assets/loader.gif') }}" class="loader m-auto" id="loader" alt="">
+    <div class="row d-flex flex-column">
+    <img src="{{ asset('assets/load-more.png') }}" class="img-more m-auto" id="load-more">more...</img>
+        <img src="{{ asset('assets/loader.gif') }}" class="loader m-auto" id="loader" alt="">
+    </div>
+
 </div>
 <div class=" w-100v">
 
@@ -64,10 +66,12 @@
                     "&c=" + categoriess,
                 type: "GET",
                 beforeSend: function () {
+                    $('#load-more').hide()
                     $('#loader').show()
                 },
                 complete: function () {
                     $('#loader').hide()
+                    $('#load-more').show()
                 },
                 success: function (a) {
                     // alert('ok')
