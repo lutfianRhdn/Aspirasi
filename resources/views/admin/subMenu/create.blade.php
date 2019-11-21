@@ -40,3 +40,4 @@
 
 
 @endsection
+@section('title','Tambah Sub Menu')

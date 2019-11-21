@@ -7,31 +7,34 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+<title> @yield('title') </title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
+    {{-- <script
+    src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script> --}}
+    <script src="https://kit.fontawesome.com/750f19868d.js" crossorigin="anonymous"></script>
+
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/all.css') }}">
 
-    <style type="text/css">
-        .container{
-            min-height: 100vh;
-        }
-    </style>
+    {{-- icon --}}
+<link rel="shortcut icon" type="image/x-icon" href="{{asset('favicon.ico')}}" />
 </head>
 <body>
     <div class="d-flex wrapper toggled">
 
         <!-- sidebar -->
-        @if(auth()->check() AND auth()->user()->role_id == 1 AND request()->segment(1) == 'admin' )
+        @if(auth()->check() AND request()->segment(1) == 'admin' )
             @include('layouts.sidebar')
         @endif
         <!-- end sidebar -->
@@ -43,50 +46,24 @@
             @include('layouts.nav')
             <!-- end nav -->
             
-            <!-- main -->
-                
+            <!-- if has confirm-->
+            @if (session('status'))
+            <div class="row mt-5">
+                <div class="col-md-12 mt-5">
+                    <div class="alert alert-success mt-5" role="alert">
+                        {{ session('status') }}
+                    </div>                    
+                </div>
+            </div>
+            @endif
+            <!--  -->
+
+            <!-- main -->  
             @yield('content')
             <!-- end main -->
             
             <!-- footer -->
-            <footer class=" footer w-100 text-white-50 bg-dark bottom-10 mt-5">
-                <div class="d-flex p-5 justify-content-between">
-
-                    <div class="ml-md-5">
-                        <h4>Hubungi kami</h4>
-                        <hr class="w-100 border-white-50">
-                        <div class=" d-flex flex-column ">
-                            <div class="d-flex align-items-center">
-                                <i class="fab fa-instagram fa-1x mr-2"></i>
-                                <a href="" class="text-white-50">instagram</a>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="fab fa-whatsapp fa-1x mr-2"></i>
-                                <a href="" class="text-white-50">whatsapp</a>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-envelope fa-1x mr-2"></i>
-                                <a href="" class="text-white-50">Email</a>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="fab fa-line fa-1x mr-2"></i>
-                                <a href="" class="text-white-50">line</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mr-md-5">
-
-                        <h4>Tentang kami</h4>
-                        <hr class="w-100 border-white-50">
-                        <div class=" d-flex flex-column ml-3">
-                            <a href="" class="text-white-50">instagram</a>
-                            <a href="" class="text-white-50">whatsapp</a>
-                        </div>
-                    </div>
-                </div>
-                <p class="text-center  mt-4 mb-0"> &copy;Sans Skuy CopyRight 2019</p>
-
-            </footer>
+            @include('layouts.footer')
             <!-- end footer -->
 
         </div>
@@ -118,8 +95,9 @@
     <!-- end modal delete -->
 
     <!-- Bootstrap core JavaScript -->
-    <script src="{{ asset('assets/js/all.js') }}"></script>
+    <!-- <script src="{{ asset('assets/js/all.js') }}"></script> -->
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    
     <!-- Menu Toggle Script -->
     <script>
         $("#menu-toggle").click(function (e) {
@@ -131,6 +109,25 @@
             $("#like").addClass("far")
             $("#like").removeClass("fas")
         })
+        $(document).ready(()=>{
+            // let aspiration = $('#aspiration').attr('data-aspiration')
+            // console.log(aspiration)
+
+            $('#aspiration').load("{{ Route('aspiration.ajax') }}")
+
+        });
+
+        $('.page-link').on('click', function(){
+   
+        });
+
+        const page = e =>{
+            // $('.page-link').preventDefault();
+            // alert('ok')
+            $(this).load("{{url('/aspirations/beranda')}}?page="+e)
+        }
     </script>
+    <!-- end of menu toggle script -->
+    
 </body>
 </html>

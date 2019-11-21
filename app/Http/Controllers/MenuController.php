@@ -12,9 +12,23 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $requests)
     {
-        $menus = Menu::with('subMenus')->get();
+
+        $menus = Menu::with('subMenus');
+
+
+        if (request()->has('s')) {
+            if (request('s') == "") {
+
+                $menus = $menus;
+            } else {
+
+                $menus = $menus->where('menu', 'LIKE', '%' . request('s') . '%');
+            }
+        }
+        $menus = $menus->get();
+
 
         return view('admin.menu.index', compact('menus'));
     }
@@ -64,9 +78,12 @@ class MenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Menu $menu)
     {
         //
+
+
+        return view('admin.menu.edit', compact('menu'));
     }
 
     /**
@@ -78,7 +95,13 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $menu = request()->validate([
+            'menu' => 'required'
+        ]);
+
+        Menu::where('id', $id)->update($menu);
+
+        return redirect()->route('menus.index');
     }
 
     /**
@@ -92,5 +115,11 @@ class MenuController extends Controller
         $menu->delete();
 
         return redirect()->route('menus.index');
+    }
+
+
+    public function get(Menu $menu)
+    {
+        return $menu;
     }
 }

@@ -16,7 +16,20 @@ class SubMenuController extends Controller
     public function index()
     {
         $menus = Menu::with('subMenus')->get();
-        $subMenus = SubMenu::with('menu')->get();
+        $subMenus = SubMenu::with('menu');
+
+        if (request()->has('s')) {
+            if (request('s') == "") {
+
+                $subMenus = $subMenus;
+            } else {
+
+                $subMenus = $subMenus->where('sub_menu', 'LIKE', '%' . request('s') . '%');
+            }
+        }
+
+        $subMenus = $subMenus->paginate(5);
+
         return view('admin.subMenu.index', compact('subMenus', 'menus'));
     }
 
@@ -43,7 +56,7 @@ class SubMenuController extends Controller
         SubMenu::create(request()->validate([
             'menu_id' => 'required',
             'sub_menu' => 'required',
-            'url' => 'required'            
+            'url' => ''
         ]));
 
         return redirect(route('sub-menus.index'));
@@ -66,9 +79,10 @@ class SubMenuController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(SubMenu $subMenu)
     {
-        //
+        $menus = Menu::all();
+        return view('admin.subMenu.edit', compact('subMenu', 'menus'));
     }
 
     /**
@@ -80,7 +94,13 @@ class SubMenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $subMenu = request()->validate([
+            'sub_menu' => 'required',
+            'menu_id' => 'required'
+        ]);
+        SubMenu::where('id', $id)->update($subMenu);
+
+        return redirect()->route('sub-menus.index');
     }
 
     /**
@@ -94,5 +114,10 @@ class SubMenuController extends Controller
         $subMenu->delete();
 
         return redirect()->route('sub-menus.index');
+    }
+
+    public function get()
+    {
+        return SubMenu::findOrFail(request('id'));
     }
 }

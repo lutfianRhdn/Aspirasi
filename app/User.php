@@ -6,7 +6,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Role;
-class User extends Authenticatable
+use App\Aspiration;
+use App\Comment;
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id'
+        'name', 'email', 'password', 'role_id', 'profile_image', 'is_admin', 'status'
     ];
 
     /**
@@ -38,8 +40,25 @@ class User extends Authenticatable
     ];
 
 
+    // public function getIsAdminAttribute($attributes){
+    //     if($attributes == 1){
+    //         return "Admin";
+    //     }else{
+    //         return "User";
+    //     }
+    // }
     /* RELASI */
-    public function role(){
-        return $this->belongsTo(Role::class);
+    // public function role(){
+    //     return $this->belongsTo(Role::class);
+    // }
+
+    public function aspirations(){
+        return $this->hasMany(Aspiration::class);
     }
-}
+
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+}   

@@ -7,11 +7,11 @@
         <h4 class="text-secondary text-center"> Users Management </h4>
         <div class="row">
         	<div class="col">
-        		<form action="" method="GET">
-        			@csrf
+			<form action="{{ Route('admin-users') }}" method="GET">
+        			{{-- @csrf --}}
         			<div class="form-group">
 	        			<input type="text" name="s" class="form-controll">
-	        			<button>Cari</button>
+	        			<button type="submit">Cari</button>
 	        		</div>
         		</form>
         	</div>
@@ -32,7 +32,7 @@
         		<tr>	
 	        		<td>{{ $no }}</td>
 	        		<td><a href="{{ route('users.show', $user->id)}}">{{ $user->name }}</a></td>
-                    <td>{{ $user->role->role }}</td>
+                    <td>{{ $user->is_admin == 1 ? 'Admin' : 'User' }}</td>
 	        		<td>{{ $user->email }}</td>
                     <td>
                         <form class="d-inline" method="POST" action="{{ route('users.destroy', $user->id) }}">
@@ -51,6 +51,9 @@
         	@endforeach
         </table>
 
+        {{ $users->links() }}
+
     </div>
 
 @endsection
+@section('title','User Management')

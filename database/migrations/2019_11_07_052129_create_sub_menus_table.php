@@ -17,7 +17,7 @@ class CreateSubMenusTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('menu_id');
             $table->string('sub_menu', 128);
-            $table->string('url');
+            $table->string('url')->nullable();
             $table->timestamps();
         });
     }

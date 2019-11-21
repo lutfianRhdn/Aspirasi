@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Aspiration;
+use App\Role;
+
 class UserController extends Controller
 {
     /**
@@ -13,9 +16,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        
-        $users = User::all();
-        return view('admin.user.index', compact('users'));
+
+        $users = User::with(Role);
+
+      
+        $users = $users->get();
+
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -45,9 +52,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        $aspirations = Aspiration::where('user_id', $user->id)->where('is_anonim', 'IS NOT', 0)->get();
+        return view('user.show', compact('user', 'aspirations'));
     }
 
     /**
@@ -56,9 +64,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -70,7 +78,14 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        User::where('id', request('id'))->update(request()->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'id' => 'required',
+            'status' => ''
+        ]));
+
+        return redirect()->route('aspirations.profile');
     }
 
     /**
@@ -82,5 +97,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        User::destroy($id);
+        return redirect()->back();
     }
 }

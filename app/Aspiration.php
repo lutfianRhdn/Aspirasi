@@ -5,8 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\AspirationCategory;
 use App\Upvote;
-use DB;
-
+use App\User;
+use App\Comment;
 class Aspiration extends Model
 {
 
@@ -23,6 +23,13 @@ class Aspiration extends Model
 		return $this->hasMany(Upvote::class);
 	}
 
+	public function user(){
+		return $this->belongsTo(User::class);
+	}
+
+	public function comments(){
+		return $this->hasMany(Comment::class);
+	}
 	// public function popularAspirations(){
 	// 	return DB::table('aspirations')->join('likes', 'aspirations.id' , '=' , 'likes.aspirations_id')->where('count(*)', '>', 5)->get();
 	// }

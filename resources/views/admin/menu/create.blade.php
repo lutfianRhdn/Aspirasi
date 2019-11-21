@@ -31,3 +31,4 @@
 
 
 @endsection
+@section('title','Tambah Menu')

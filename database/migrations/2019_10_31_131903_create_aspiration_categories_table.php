@@ -16,6 +16,8 @@ class CreateAspirationCategoriesTable extends Migration
         Schema::create('aspiration_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('category', 25);
+            $table->string('image');
+            $table->string('email_address');
             $table->timestamps();
         });
     }

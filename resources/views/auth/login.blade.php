@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container-fluid center my-5">
-        <div class="bg-dark-50 shadow-sm w-sm-75 m-auto p-5 border-radius  align-items-center">
+<div class="bg-gradient py-5">
+
+    <div class="container-fluid  center ">
+        <div class="bg-white-50 shadow-sm w-sm-75 m-auto p-5 border-radius  align-items-center">
             
             <h1 class="text-center">LOGIN</h1>
             <hr class="border-white">
@@ -30,5 +32,7 @@
             </form>
         </div>
     </div>
+</div>
 
 @endsection
+@section('title','Login')

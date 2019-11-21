@@ -11,30 +11,65 @@
 |
 */
 
-
 //default
-Route::redirect('/home', '/')->name('home');
+Route::redirect('/home', url('/'))->name('home');
 
+Route::get('/profile', function () {
+	return view('layouts.profile');
+})->name('profile');
+
+Route::get('/about', function () {
+	return view('layouts.about');
+})->name('about');
 // auth
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 /* ASPIRATIONS or USERS */
-Route::get('/', 'AspirationController@index')->name('aspirations.index');
+Route::group(['middleware' => ['verified']], function () {
+	Route::get('/', 'AspirationController@index')->name('aspirations.index');
+	Route::get('/aspirations/beranda', 'AspirationController@beranda')->name('aspirations.beranda');
+	Route::get('/aspiration/load', 'AspirationController@aspirationAjax')->name('aspiration.ajax');
+	Route::get('/aspirations/{aspiration}/show', 'AspirationController@show')->name('aspirations.show');
+	Route::get('/aspirations/{user}/profile', 'UserController@show')->name('aspirations.user');
 
-route::group(['auth'] , function(){
+	Route::get('aspirations/get-ajax', 'AspirationController@aspirationAjax')->name('aspirations.ajax');
+	// Route::post('aspirations/get-ajax', 'AspirationController@aspirationAjax')->name('aspirations.ajax');
+});
+
+
+route::group(['middleware' => ['auth', 'verified']], function () {
+
 	Route::get('/aspirations/create', 'AspirationController@create')->name('aspirations.create');
 	Route::post('/aspirations/store', 'AspirationController@store')->name('aspirations.store');
 	Route::get('/aspirations/{aspiration}/delete', 'AspirationController@destroy')->name('aspirations.delete');
-	Route::post('/aspirations/upvote', 'AspirationController@upvote')->name('aspirations.upvote');
-	Route::get('/aspirations/beranda', 'AspirationController@beranda')->name('aspirations.beranda');
-	Route::get('aspirations/profile', 'AspirationController@profile')->name('aspirations.profile');
+	Route::get('/aspirations/{aspiration}/upvote', 'AspirationController@upvote')->name('aspirations.upvote');
+	Route::get('/aspirations/profile', 'AspirationController@profile')->name('aspirations.profile');
+	Route::get('/aspirations/search', 'AspirationController@search')->name('aspirations.search');
+	Route::delete('aspirations/{aspiration}/delete', 'AspirationController@delete')->name('aspirations.delete');
+	Route::post('/aspiration/comment', 'AspirationController@storeComment')->name('aspirations.comment');
+	// Ajax search
+	Route::get('/aspirations/ajax-search', 'AspirationController@ajaxSearch')->name('aspirations.ajax-search');
 });
 
+route::group(['middleware' => ['auth', 'verified']], function () {
+	Route::resource('admin/user', 'UserController');
+	Route::get('/user/index', 'UserController@edit')->name('users.index');
+	Route::get('/user/{user}/edit', 'UserController@edit')->name('users.edit');
+	Route::get('/user/{user}/show', 'UserController@edit')->name('users.show');
+	Route::delete('user/{user}/destroy', 'UserController@destroy')->name('users.destroy');
+	Route::patch('/user/{id}/update', 'UserController@update')->name('users.update');
+});
 /* ADMINS */
-Route::group(['admin'], function(){
+Route::group(['middleware' => ['admin', 'verified']], function () {
 	Route::get('/admin', 'AdminController@index')->name('admins.index');
 	Route::resource('admin/menus', 'MenuController');
 	Route::resource('admin/sub-menus', 'SubMenuController');
-	Route::resource('admin/users', 'UserController');
-});
+	Route::get('admin/users', 'AdminController@user')->name('admin-users');
 
+	// aspirations
+	Route::get('admin/aspiration-admin', 'AdminController@aspiration')->name('aspiration-admin.index');
+	Route::resource('admin/categories', 'AspirationcategoryController');
+	// for ajax
+	Route::get('admin/get/{menu}', 'MenuController@get')->name('menus.get');
+	Route::get('admin/get-sub', 'SubMenuController@get')->name('sub-menus.get');
+});

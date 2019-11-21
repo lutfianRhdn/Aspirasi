@@ -12,10 +12,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
-        // $this->call(AspirationCategory::class);
+        $this->call(MenuSeeder::class);
+        $this->call(SubMenuSeeder::class);
+        $this->call(AspirationCategorySeeder::class);
+        $this->call(RoleSeeder::class);
         factory(App\User::class, 10)->create();
-        factory(App\AspirationCategory::class,5)->create();
-        factory(App\Aspiration::class,50)->create();
-        factory(App\Upvote::class,500)->create();
+        factory(App\Aspiration::class,100)->create();
+        factory(App\Comment::class, 50)->create();
+        factory(App\Upvote::class,1000)->create();
     }
 }

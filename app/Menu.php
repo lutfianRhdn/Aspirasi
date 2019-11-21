@@ -13,4 +13,10 @@ class Menu extends Model
     public function subMenus(){
     	return $this->hasMany(SubMenu::class);
     }
+
+    public function delete(){
+    	$this->subMenus()->delete();
+
+    	return parent::delete();
+    }
 }

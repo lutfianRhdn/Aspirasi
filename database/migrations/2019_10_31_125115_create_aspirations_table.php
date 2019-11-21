@@ -19,7 +19,9 @@ class CreateAspirationsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('title', 255);
             $table->text('aspiration');
+            $table->string('aspiration_image')->nullable();
             $table->smallInteger('is_anonim')->nullable();
+            $table->smallInteger('is_accepted')->nullable();
             $table->timestamps();
 
         });

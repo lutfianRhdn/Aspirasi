@@ -28,7 +28,7 @@
             
             <!-- sub menu -->
             @foreach( $menu->subMenus as $subMenu)
-            <a href="{{ route($subMenu->url) }}" class="list-group-item list-group-item-action px-5 s-m ">
+            <a href="{{ route($subMenu->url) }}"  class="list-group-item hide list-group-item-action px-5 s-m ">
                 <span class="menu-collapsed">{{ $subMenu->sub_menu}}</span>
             </a>
             @endforeach
@@ -45,11 +45,9 @@
             let subMenu = $(this).attr('href');
           
             // remove classes from all
-            $(".sm").removeClass("show");
-            $(".m").removeClass("active");
+            // $(".sm").removeClass("show");
             // add class to the one we clicked
-            $(this).addClass("show");
-            $(this).addClass("active");
+            $(submenu).toggleClass("shows");
         });
 });
 </script>

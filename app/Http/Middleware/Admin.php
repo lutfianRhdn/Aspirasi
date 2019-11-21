@@ -15,10 +15,15 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if( auth()->check() && auth()->user()->role_id == 1){
-            return $next($request);
+        if( auth()->check()){
+            if(auth()->user()->role_id == 1 OR auth()->user()->is_admin == 1){
+                return $next($request);
+            }else{
+                return abort('403');
+            }
+        
+        }else{
+            return redirect()->route('login');
         }
-
-        return redirect(route('aspirations.index'));
     }
 }

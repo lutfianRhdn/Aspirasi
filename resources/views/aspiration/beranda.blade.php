@@ -2,81 +2,105 @@
 
 @section('content')
 <div class="container  p-3 mt-5">
-	@include('layouts.category')
 
-	<!-- options -->
-	 <div class=" mt-4">
+    <!-- categories -->
+    @include('layouts.category')
+    <!-- end of categories -->
+
+    <!-- options -->
+    <div class=" mt-4">
         <div class="nav nav-tabs d-flex justify-content-center" id="nav-tab" role="tablist">
-             <a class="nav-item nav-link" id="nav-contact-tab"  href="{{ route('aspirations.beranda', ['o' => 'popular', 'c' => request('c')] ) }}"
-                            role="tab" aria-controls="nav-contact" aria-selected="false">Populer</a>
+            <a class="nav-item nav-link" id="nav-contact-tab"
+                href="{{ route('aspirations.beranda', ['o' => 'popular', 'c' => request('c')] ) }}" role="tab"
+                aria-controls="nav-contact" aria-selected="false">Populer</a>
 
             <a class="nav-item nav-link" href="{{ route('aspirations.beranda', ['o' => 'new', 'c' => request('c')] ) }}"
                 role="tab" aria-controls="nav-profile" aria-selected="false">Terbaru</a>
-            <a class="nav-item nav-link" href="{{ route('aspirations.beranda', ['o' => 'accepted', 'c' => request('c')]) }}"
-                role="tab" aria-controls="nav-contact" aria-selected="true">Tercapai</a>
+
+            <a class="nav-item nav-link"
+                href="{{ route('aspirations.beranda', ['o' => 'accepted', 'c' => request('c')]) }}" role="tab"
+                aria-controls="nav-contact" aria-selected="true">Tercapai</a>
         </div>
     </div>
-	<!-- end of options -->
+    <!-- end of options -->
 
-	@foreach($aspirations as $aspiration)
-    <!-- card -->
-    <div class="tab-content border h-100 p-4 my-5" id="nav-tabContent">
-        <!-- terbaru tab -->
-        <div class="tab-pane fade text-black show active" id="nav-home" role="tabpanel"
-            aria-labelledby="nav-home-tab">
+    <!-- aspirations -->
 
-
-            <!-- aspiration card -->
-            <div class="card card-hover">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="d-flex align-self-center">
-                        <img class="img-circle img-small" src="{{ asset('assets/img/pendidikan.png') }}" alt="">
-                        <h5 class=" mt-auto mb-auto ml-2 text-info"> {{ $aspiration->aspirationCategory->category }}</h5>
-                    </div>
-
-                    <div>
-                        {{ $aspiration->created_at->diffForHumans() }}
-                    </div>
-                </div>
-                <div class="card-body" id="">
-                    <h5 class="card-title">{{ $aspiration->title }}</h5>
-                    <!-- text aspiration -->
-                    <span class="more card-text">
-                        {{ substr($aspiration->aspiration, 256,512)  }}<a href=""> read more...</a>
-                    </span>
-                    <!-- end text Aspiration -->
-                    <div class="divider"></div>
-                    <div class="d-flex">
-
-                        <!-- upvote -->
-                        <div class="d-flex flex-column align-items-center">
-
-                            <i class="far  fa-thumbs-up text-danger" id="like"></i>
-                            <p class=" text-small text-black">{{ $aspiration->upvotes_count }} upvotes</p>
-                        </div>
-                        <!-- end of upvots -->
-
-                        <!-- comment -->
-                        <!-- <div class="d-flex flex-column ml-2 align-items-center">
-
-                            <a href="">
-                                <i class="far fa-comment text-primary"></i>
-                            </a>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-            <!-- end card -->
-        </div>
-        <!-- terPopuler tab -->
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-            ...
-        </div>
-        <!-- terWujud tab -->
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-            ...
-        </div>
-    </div>
+    @foreach($aspirations as $aspiration)
+        @include('aspiration.aspiration_card.card',compact('aspiration'))
     @endforeach
+    @php
+    $aspirations = [];
+    @endphp
+
+
+    {{-- @include('aspiration') --}}
+
+    <!-- link -->
+    {{-- {{ $aspirations->links() }} --}}
+    <!-- end link -->
+    <div id="test"></div>
+    <button id="load-more">more...</button>
+    
+    <img src="{{ asset('assets/loader.gif') }}" class="loader m-auto" id="loader" alt="">
 </div>
+<div class=" w-100v">
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // alert('ok')
+        let categories = "{{request('o') !== null ? request('o') : 'popular'}}"
+        // console.log(categoriess)
+        let categoriess = {{request('c') !== null ? request('c') : 1}}
+        let number = {{request('page') !== null ? request('page') : 2}};
+
+        // let aspirationss = '';
+        $("#load-more").on('click', function () {
+            $.ajax({
+                url: " {{ url('aspirations/get-ajax?page=' )}}" + number + "&o=" + categories +
+                    "&c=" + categoriess,
+                type: "GET",
+                beforeSend: function () {
+                    $('#loader').show()
+                },
+                complete: function () {
+                    $('#loader').hide()
+                },
+                success: function (a) {
+                    // alert('ok')
+                    // console.log(a)
+
+                    aspirations = a.html
+                    $('#test').append(`${a}`)
+                    // let
+                    // $('.paralax-hide').each(i => {
+                    //     // i /= number
+                    //     console.log(i)
+                    //     setTimeout(() => {
+                    //         $('.paralax-hide').eq(i).addClass('paralax-show');
+                    //         $('.paralax').eq(i).removeClass('paralax-hide');
+                    //     }, 1000 * i);
+                    // })
+                    $('.paralax').addClass('paralax-hide')
+                    $('.paralax-hide').each(e => {
+                        let i = (1000 * e)
+                    setTimeout(() => {
+                            $('.paralax-hide').eq(e).addClass('paralax-show');
+                            $('.paralax').eq(e).removeClass('paralax-hide');
+                        }, i  );
+                    })
+
+                    number++
+                    // console.log(i);
+                }
+            })
+            // $('#test').append("<h1>sdfdsffsdf</h1>")
+        });
+    });
+
+</script>
 @endsection
+@section('title','Beranda')

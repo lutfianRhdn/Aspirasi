@@ -48,10 +48,12 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:3', 'confirmed'],
+            'profile_image' => ['image', 'nullable', 'max:1999'],
         ]);
     }
 
@@ -63,11 +65,33 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // profile_image
+        if(request()->hasFile('profile_image')){
+            // filename with extension
+            $fileNameWithExtension = $data['profile_image']->getClientOriginalName();
+            
+            //file name
+            $fileName = pathInfo($fileNameWithExtension, PATHINFO_FILENAME);
+
+            // extension
+            $fileNameExtension = $data['profile_image']->getClientOriginalExtension();
+
+            //store
+            $fileNameToStore = $fileName . time() . $fileNameExtension;
+
+            $path = $data['profile_image']->storeAs('public/profile_images' , $fileNameToStore);
+
+        }else{
+            $fileNameToStore = 'default.jpg';
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'role_id' => 2,
+            'is_admin' => 0,
             'password' => Hash::make($data['password']),
+            'profile_image' => $fileNameToStore,
         ]);
     }
 }
