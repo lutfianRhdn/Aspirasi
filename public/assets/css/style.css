@@ -348,6 +348,9 @@ main {
     width: 100vw;
 }
 
+
+/* keyframe */
+
 @keyframes bgAnimate {
     from {
         background: #209cff;
