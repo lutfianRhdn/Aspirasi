@@ -5,16 +5,7 @@
     <!-- aspiration content -->
     <div class="container  p-3 my-5">
         <h4 class="text-secondary text-center"> Menus </h4>
-        <div class="row">
-        	<div class="col-md-6">
-        		<form action="{{ route('menus.index') }}" method="GET">
-        			<div class="form-group">
-	        			<input type="text" name="s" class="form-controll">
-	        			<button type="submit">Cari</button>
-	        		</div>
-        		</form>
-        	</div>
-
+        <div class="row justify-content-end mb-3">
             <div class="col-md-6 text-right">
                 <!-- Button to Open the Modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
@@ -66,7 +57,7 @@
         </div>      
         </div>
 
-        <table class="table table-hover">
+        <table class="table table-hover" id="table-menu">
         	<thead>
         		<tr>
 	        		<th>No</th>
@@ -75,7 +66,7 @@
 	        		<th>Action</th>
         		</tr>
         	</thead>
-        	@php $no = 1; @endphp
+        	{{-- @php $no = 1; @endphp
         	@foreach($menus as $menu)
         	<tbody>
         		<tr>	
@@ -94,10 +85,22 @@
         		</tr>
         	</tbody>
         	@php $no++ @endphp
-        	@endforeach
+        	@endforeach --}}
         </table>
 
     </div>
-
+<script>
+  $('#table-menu').dataTable({
+    processing:true,
+	serverSide:true,
+	ajax : "{{ route('menu-table')}}",
+	columns:[
+		{data:'DT_RowIndex'},
+    {data:'menu'},
+    {data:'subMenuCount'},
+		{data: 'action', name: 'action', orderable: false, searchable: false}
+	]
+  })
+</script>
 @endsection
 @section('title','Menu')

@@ -12,6 +12,8 @@
 */
 
 //default
+
+
 Route::redirect('/home', url('/'))->name('home');
 
 Route::get('/profile', function () {
@@ -62,13 +64,20 @@ route::group(['middleware' => ['auth', 'verified']], function () {
 /* ADMINS */
 Route::group(['middleware' => ['admin', 'verified']], function () {
 	Route::get('/admin', 'AdminController@index')->name('admins.index');
+	Route::get('admin/action-link', 'userController@html')->name('action-link');
+	// menu
 	Route::resource('admin/menus', 'MenuController');
+	Route::get('admin/menu-ajax', 'MenuController@getMenuList')->name('menu-table');
+	// submenu
 	Route::resource('admin/sub-menus', 'SubMenuController');
+	Route::get('admin/subMenu-ajax', 'SubMenuController@getSubmenuList')->name('subMenu-table');
+	// user
 	Route::get('admin/users', 'AdminController@user')->name('admin-users');
-
+	Route::get('admin/users-ajax', 'UserController@dataTableList')->name('user-table');
 	// aspirations
 	Route::get('admin/aspiration-admin', 'AdminController@aspiration')->name('aspiration-admin.index');
-	Route::resource('admin/categories', 'AspirationcategoryController');
+	Route::resource('admin/categories', 'AspirationCategoryController');
+	Route::get('admin/categories-ajax', 'AspirationCategoryController@getCategoriesList')->name('categories-table');
 	// for ajax
 	Route::get('admin/get/{menu}', 'MenuController@get')->name('menus.get');
 	Route::get('admin/get-sub', 'SubMenuController@get')->name('sub-menus.get');

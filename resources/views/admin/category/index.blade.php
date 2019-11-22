@@ -5,15 +5,7 @@
     <!-- aspiration content -->
     <div class="container  p-3 my-5">
         <h4 class="text-secondary text-center"> Categories </h4>
-        <div class="row">
-        	<div class="col-md-6">
-        		<form action="{{ route('categories.index') }}" method="GET">
-        			<div class="form-group">
-	        			<input type="text" name="s" class="form-controll">
-	        			<button type="submit">Cari</button>
-	        		</div>
-        		</form>
-        	</div>
+        <div class="row justify-content-end mb-4">	
 
             <div class="col-md-6 text-right">
                 <!-- Button to Open the Modal -->
@@ -72,7 +64,7 @@
         </div>      
         </div>
 
-        <table class="table table-hover">
+        <table class="table table-hover" id="category-table">
         	<thead>
         		<tr>
 	        		<th>No</th>
@@ -81,10 +73,11 @@
                     <th>Category Email</th>
 	        		<th>Action</th>
         		</tr>
-        	</thead>
+          </thead>
+          
+{{--           
         	@php $no = 1; @endphp
         	@foreach($categories as $category)
-            {{-- {{dd($category)}} --}}
             <tbody>
         		<tr>	
 	        		<td>{{ $no }}</td>
@@ -103,10 +96,23 @@
         		</tr>
         	</tbody>
         	@php $no++ @endphp
-        	@endforeach
+        	@endforeach --}}
         </table>
 
     </div>
-
+<script>
+  $('#category-table').DataTable({
+  processing:true,
+  serverSide:true,
+    ajax: "{{Route('categories-table')}}",
+    columns:[
+      {data:'DT_RowIndex'},
+      {data:'icon'},
+      {data:'category'},
+      {data:'email_address'},
+      {data:'action'}
+    ]
+  })
+</script>
 @endsection
 @section('title','Categories')

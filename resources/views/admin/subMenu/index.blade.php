@@ -5,16 +5,7 @@
     <!-- aspiration content -->
     <div class="container  p-3 my-5">
         <h4 class="text-secondary text-center"> Sub Menus </h4>
-        <div class="row">
-        	<div class="col-md-6">
-        		<form action="{{route('sub-menus.index')}}" method="GET">
-        			
-        			<div class="form-group">
-	        			<input type="text" name="s" class="form-controll">
-	        			<button>Cari</button>
-	        		</div>
-        		</form>
-        	</div>
+        <div class="row justify-content-end mb-4">     
 
             <div class="col-md-6 text-right">
                  <!-- Button to Open the Modal -->
@@ -26,7 +17,7 @@
             </div>
         </div>
 
-        <table class="table table-hover">
+        <table class="table table-hover" id="subMenuTable">
         	<thead>
         		<tr>
 	        		<th>No</th>
@@ -36,7 +27,7 @@
 	        		<th>Action</th>
         		</tr>
         	</thead>
-        	@php $no = 1; @endphp
+        	{{-- @php $no = 1; @endphp
         	@foreach($subMenus as $subMenu)
         	<tbody>
         		<tr>	
@@ -56,12 +47,25 @@
         		</tr>
         	</tbody>
         	@php $no++ @endphp
-        	@endforeach
+        	@endforeach --}}
         </table>
 
-        {{ $subMenus->links() }}
+        {{-- {{ $subMenus->links() }} --}}
     </div>
-
+<script>
+$('#subMenuTable').DataTable({
+  processing:true,
+  serverSide:true,
+  ajax: "{{route('subMenu-table')}}",
+columns:[
+		{data:'DT_RowIndex'},
+		{data: 'menu.menu'},
+		{data:'sub_menu'},
+		{data:'url'},
+		{data: 'action', name: 'action', orderable: false, searchable: false}
+	]
+})
+</script>
 
 
 <!-- ADD -->

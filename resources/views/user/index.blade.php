@@ -9,14 +9,14 @@
         	<div class="col">
 			<form action="{{ Route('admin-users') }}" method="GET">
         			{{-- @csrf --}}
-        			<div class="form-group">
+        			{{-- <div class="form-group">
 	        			<input type="text" name="s" class="form-controll">
 	        			<button type="submit">Cari</button>
-	        		</div>
+	        		</div> --}}
         		</form>
         	</div>
         </div>
-        <table class="table table-hover">
+        <table class="table table-hover" id="user-table">
         	<thead>
         		<tr>
 	        		<th>No</th>
@@ -27,7 +27,7 @@
         		</tr>
         	</thead>
         	@php $no = 1; @endphp
-        	@foreach($users as $user)
+        	{{-- @foreach($users as $user)
         	<tbody>
         		<tr>	
 	        		<td>{{ $no }}</td>
@@ -47,13 +47,27 @@
                     </td>
         		</tr>
         	</tbody>
-        	@php $no++ @endphp
-        	@endforeach
+        	@php $no++ @endphp 
+        	@endforeach --}}
         </table>
 
-        {{ $users->links() }}
+        {{-- {{ $users->links() }} --}}
 
     </div>
+<script>
+$('#user-table').DataTable({
+	processing:true,
+	serverSide:true,
+	ajax : "{{ route('user-table')}}",
+	columns:[
+		{data:'DT_RowIndex'},
+		{data: 'name'},
+		{data:'roles'},
+		{data:'email'},
+		{data: 'action', name: 'action', orderable: false, searchable: false}
+	]
 
+})
+</script>
 @endsection
 @section('title','User Management')

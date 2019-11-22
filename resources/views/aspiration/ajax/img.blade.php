@@ -1,0 +1,1 @@
+<img src="{{ asset('assets/img/category/'.$icons->image) }}" alt="{{ $icons->category }}" class="img-small img-circle m-auto">

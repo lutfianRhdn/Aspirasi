@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Aspiration;
 use App\Role;
+use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
@@ -19,10 +20,12 @@ class UserController extends Controller
 
         $users = User::with(Role);
 
-      
+
         $users = $users->get();
 
+
         return view('user.index', compact('users'));
+        // return view('user.index');
     }
 
     /**
@@ -99,5 +102,21 @@ class UserController extends Controller
         //
         User::destroy($id);
         return redirect()->back();
+    }
+    public function dataTableList()
+    {
+        // Role
+        $users = User::with('role');
+
+        // $action = view('user.link', compact('users'))->render();
+        $users = $users->get();
+        return datatables($users)->addIndexColumn()->addColumn('action', function ($user) {
+            return view('layouts.link', ['data' => $user, 'link' => 'users'])->render();
+        })
+            ->addColumn('roles', function ($isAdmin) {
+                $admin = $isAdmin->is_admin == 1 ? 'admin' : 'user';
+                return $admin;
+            })
+            ->make(true);
     }
 }

@@ -15,22 +15,22 @@ class MenuController extends Controller
     public function index(Request $requests)
     {
 
-        $menus = Menu::with('subMenus');
+        // $menus = Menu::with('subMenus');
 
 
-        if (request()->has('s')) {
-            if (request('s') == "") {
+        // if (request()->has('s')) {
+        //     if (request('s') == "") {
 
-                $menus = $menus;
-            } else {
+        //         $menus = $menus;
+        //     } else {
 
-                $menus = $menus->where('menu', 'LIKE', '%' . request('s') . '%');
-            }
-        }
-        $menus = $menus->get();
+        //         $menus = $menus->where('menu', 'LIKE', '%' . request('s') . '%');
+        //     }
+        // }
+        // $menus = $menus->get();
 
 
-        return view('admin.menu.index', compact('menus'));
+        return view('admin.menu.index');
     }
 
     /**
@@ -121,5 +121,17 @@ class MenuController extends Controller
     public function get(Menu $menu)
     {
         return $menu;
+    }
+
+    public function getMenuList()
+    {
+        $menu = Menu::with('subMenus')->get();
+        return datatables($menu)->addIndexColumn()->addColumn('action', function ($menu) {
+            return view('layouts.link', ['data' => $menu, 'link' => "menus"])->render();
+        })
+            ->addColumn('subMenuCount', function ($menu) {
+                return $menu->subMenus->count();
+            })
+            ->make();
     }
 }

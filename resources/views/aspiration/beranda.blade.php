@@ -40,8 +40,8 @@
     {{-- {{ $aspirations->links() }} --}}
     <!-- end link -->
     <div id="test"></div>
-    <div class="row d-flex flex-column">
-    <img src="{{ asset('assets/load-more.png') }}" class="img-more m-auto" id="load-more">more...</img>
+    <div class="row d-flex flex-column mb-4 ">
+    <img src="{{ asset('assets/load-more.png') }}" class="img-more m-auto" id="load-more">
         <img src="{{ asset('assets/loader.gif') }}" class="loader m-auto" id="loader" alt="">
     </div>
 

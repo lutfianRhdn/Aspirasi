@@ -18,16 +18,6 @@ class AspirationCategoryController extends Controller
         // dd($categories);
         $categories = new AspirationCategory();
 
-
-        if (request()->has('s')) {
-            if (request('s') == "") {
-
-                $categories = $categories;
-            } else {
-
-                $categories = $categories->where('category', 'LIKE', '%' . request('s') . '%');
-            }
-        }
         $categories = $categories->get();
 
         return view('admin.category.index', compact('categories'));
@@ -116,5 +106,18 @@ class AspirationCategoryController extends Controller
         AspirationCategory::where('id', $id)->delete();
 
         return redirect()->back();
+    }
+    public function getCategoriesList()
+    {
+        $categories = AspirationCategory::get();
+        return datatables($categories)->addIndexColumn()
+            ->addColumn('action', function ($category) {
+                return view('layouts.link', ['data' => $category, 'link' => 'categories'])->render();
+            })
+            ->addColumn('icon', function ($icons) {
+                // $img = view();
+                return  view('aspiration.ajax.img',compact('icons'));
+            })
+            ->make();
     }
 }

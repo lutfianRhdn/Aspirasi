@@ -18,17 +18,17 @@ class SubMenuController extends Controller
         $menus = Menu::with('subMenus')->get();
         $subMenus = SubMenu::with('menu');
 
-        if (request()->has('s')) {
-            if (request('s') == "") {
+        // if (request()->has('s')) {
+        //     if (request('s') == "") {
 
-                $subMenus = $subMenus;
-            } else {
+        //         $subMenus = $subMenus;
+        //     } else {
 
-                $subMenus = $subMenus->where('sub_menu', 'LIKE', '%' . request('s') . '%');
-            }
-        }
+        //         $subMenus = $subMenus->where('sub_menu', 'LIKE', '%' . request('s') . '%');
+        //     }
+        // }
 
-        $subMenus = $subMenus->paginate(5);
+        // $subMenus = $subMenus->paginate(5);
 
         return view('admin.subMenu.index', compact('subMenus', 'menus'));
     }
@@ -119,5 +119,17 @@ class SubMenuController extends Controller
     public function get()
     {
         return SubMenu::findOrFail(request('id'));
+    }
+    public function getSubMenuList()
+    {
+        $subMenus = SubMenu::with('menu')->get();
+        return
+            datatables($subMenus)
+            ->addIndexColumn()
+            ->addColumn('action', function ($subMenu) {
+                return view('layouts.link', ['data' => $subMenu, 'link' => "sub-menus"])->render();
+            })
+           
+            ->make();
     }
 }

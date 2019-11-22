@@ -9,6 +9,7 @@ use App\Role;
 use App\Aspiration;
 use App\Comment;
 use App\Upvote;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -78,5 +79,9 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->upvotes()->delete();
 
         return parent::delete();
+    }
+    public function role()
+    {
+        return $this->BelongsTo(Role::class);
     }
 }
