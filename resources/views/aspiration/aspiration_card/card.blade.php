@@ -1,6 +1,6 @@
 {{-- {{ $aspiration->user->id}} {{die}} --}}
 <!-- card -->
-<div class="tab-content border h-100 p-4 my-5 paralax" id="nav-tabContent">
+<div class="tab-content border h-100 p-4 my-5 paralax paralax-hide" id="nav-tabContent">
     <div class="card card-hover">
 
         <!-- header -->

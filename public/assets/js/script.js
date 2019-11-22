@@ -1,12 +1,12 @@
 $(document).ready(function () {
-    $('.paralax').addClass('paralax-hide')
-    $('.paralax-hide').each(e => {
+    $('.paralax').each(e => {
         setTimeout(() => {
-            $('.paralax-hide').eq(e).addClass('paralax-show');
+            console.log(e)
+            $('.paralax').eq(e).addClass('paralax-show');
             $('.paralax').eq(e).removeClass('paralax-hide');
         }, 1000 * e);
     })
-e=0 
+    // e=0 
 
 
 

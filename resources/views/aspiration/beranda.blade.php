@@ -57,12 +57,12 @@
         let categories = "{{request('o') !== null ? request('o') : 'popular'}}"
         // console.log(categoriess)
         let categoriess = {{request('c') !== null ? request('c') : 1}}
-        let number = {{request('page') !== null ? request('page') : 2}};
+        let page = {{request('page') !== null ? request('page') : 2}};
 
         // let aspirationss = '';
         $("#load-more").on('click', function () {
             $.ajax({
-                url: " {{ url('aspirations/get-ajax?page=' )}}" + number + "&o=" + categories +
+                url: " {{ url('aspirations/get-ajax?page=' )}}" + page + "&o=" + categories +
                     "&c=" + categoriess,
                 type: "GET",
                 beforeSend: function () {
@@ -88,16 +88,17 @@
                     //         $('.paralax').eq(i).removeClass('paralax-hide');
                     //     }, 1000 * i);
                     // })
-                    $('.paralax').addClass('paralax-hide')
-                    $('.paralax-hide').each(e => {
-                        let i = (1000 * e)
+                    $('.paralax').each(i => {
+                        // let i = (1000 * e)
+                        let number = i+(5*(page-1))
                     setTimeout(() => {
-                            $('.paralax-hide').eq(e).addClass('paralax-show');
-                            $('.paralax').eq(e).removeClass('paralax-hide');
-                        }, i  );
+// console.log(number)
+                            $('.paralax').eq(number).addClass('paralax-show');
+                            $('.paralax').eq(number).removeClass('paralax-hide');
+                        }, (1000 * i+(5/(page-1)) )  );
                     })
 
-                    number++
+                    page++
                     // console.log(i);
                 }
             })
