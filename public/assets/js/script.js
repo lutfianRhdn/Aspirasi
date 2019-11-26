@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('.paralax').each(e => {
         setTimeout(() => {
-            console.log(e)
+            // console.log(e)
             $('.paralax').eq(e).addClass('paralax-show');
             $('.paralax').eq(e).removeClass('paralax-hide');
         }, 1000 * e);
