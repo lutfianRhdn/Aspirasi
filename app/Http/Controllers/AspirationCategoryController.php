@@ -113,6 +113,7 @@ class AspirationCategoryController extends Controller
         return datatables($categories)->addIndexColumn()
             ->addColumn('action', function ($category) {
                 return view('layouts.link', ['data' => $category, 'link' => 'categories'])->render();
+                
             })
             ->addColumn('icon', function ($icons) {
                 // $img = view();
