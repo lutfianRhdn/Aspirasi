@@ -21,7 +21,7 @@
 
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 <div class="form-group">
-                    <label for="Title">Title </label>
+                    <label for="title">Title </label>
                     <input type="text" class="form-control" id="Title" aria-describedby="emailHelp"
                         placeholder="Enter Title" name="title" value="{{ old('title') }}">
                     @if($errors->has('title'))
