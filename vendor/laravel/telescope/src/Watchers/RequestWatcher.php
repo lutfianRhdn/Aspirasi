@@ -2,17 +2,18 @@
 
 namespace Laravel\Telescope\Watchers;
 
-use Illuminate\View\View;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 use Illuminate\Http\Request;
-use Laravel\Telescope\Telescope;
+use Illuminate\Http\Response as IlluminateResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Laravel\Telescope\FormatModel;
 use Laravel\Telescope\IncomingEntry;
-use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Response as IlluminateResponse;
-use Illuminate\Foundation\Http\Events\RequestHandled;
+use Laravel\Telescope\Telescope;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class RequestWatcher extends Watcher
 {
@@ -145,12 +146,17 @@ class RequestWatcher extends Watcher
     {
         $content = $response->getContent();
 
-        if (is_string($content) &&
-            is_array(json_decode($content, true)) &&
-            json_last_error() === JSON_ERROR_NONE) {
-            return $this->contentWithinLimits($content)
-                    ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                    : 'Purged By Telescope';
+        if (is_string($content)) {
+            if (is_array(json_decode($content, true)) &&
+                json_last_error() === JSON_ERROR_NONE) {
+                return $this->contentWithinLimits($content)
+                        ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
+                        : 'Purged By Telescope';
+            }
+
+            if (Str::startsWith(strtolower($response->headers->get('Content-Type')), 'text/plain')) {
+                return $this->contentWithinLimits($content) ? $content : 'Purged By Telescope';
+            }
         }
 
         if ($response instanceof RedirectResponse) {

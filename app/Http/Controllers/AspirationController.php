@@ -10,12 +10,21 @@ use App\Aspiration;
 use App\Upvote;
 use App\User;
 use App\Comment;
+use App\Events\statusComment;
 use App\Mail\SendAspirationMail;
+use App\Notifications\UserCommentToAspirationNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 
 class AspirationController extends Controller
 {
 
+
+    public function __constuct()
+    {
+        $notification = json_decode(auth()->user->notifications);
+        View::share('notifications', $notification);
+    }
 
     /* HELPER METHOD */
     //get the popular aspirations
@@ -40,6 +49,8 @@ class AspirationController extends Controller
     public function index()
     {
 
+
+
         // get the data from between 7 days back
         $aspirations = Aspiration::withCount('upvotes')->orderBy('upvotes_count', 'DESC')->with('user')->limit(5)->get();
 
@@ -62,7 +73,14 @@ class AspirationController extends Controller
     public function show(Aspiration $aspiration)
     {
 
-        return view('aspiration.show', compact('aspiration'));
+        // dd(auth()->user()->unreadNotifications);
+        // foreach (auth()->user()->notifications as $notification) {
+        //     $n =  json_decode($notification);
+        //     echo $n->data->user_id . $n->data->message;
+        // }
+        // die;
+        $notifications =  auth()->user()->notifications;
+        return view('aspiration.show', compact('aspiration', 'notifications'));
     }
 
     public function store()
@@ -220,12 +238,16 @@ class AspirationController extends Controller
         ]);
 
 
-        Comment::create([
+        $comment = Comment::create([
             'aspiration_id' => request('aspiration_id'),
             'comment' => request('comment'),
             'user_id' => auth()->user()->id
         ]);
 
+        $user = User::find($comment->aspiration->user->id);
+        // dd($user);
+        $user->notify(new UserCommentToAspirationNotification('Has Comment into your account', $user, request('aspiration_id')));
+        // event(new statusComment("admin"));
         return redirect()->back();
     }
 

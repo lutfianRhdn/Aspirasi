@@ -4,14 +4,16 @@ namespace Laravel\Telescope;
 
 use Closure;
 use Exception;
-use Throwable;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Log\Events\MessageLogged;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Laravel\Telescope\Contracts\EntriesRepository;
 use Laravel\Telescope\Contracts\TerminableRepository;
+use RuntimeException;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Throwable;
 
 class Telescope
 {
@@ -69,6 +71,7 @@ class Telescope
      */
     public static $hiddenRequestHeaders = [
         'authorization',
+        'php-auth-pw',
     ];
 
     /**
@@ -181,6 +184,7 @@ class Telescope
                 'vendor/telescope*',
                 'horizon*',
                 'vendor/horizon*',
+                'nova-api*',
             ], config('telescope.ignore_paths', []))
         );
     }
@@ -252,7 +256,7 @@ class Telescope
         );
 
         try {
-            if (Auth::hasUser()) {
+            if (Auth::hasResolvedGuards() && Auth::hasUser()) {
                 $entry->user(Auth::user());
             }
         } catch (Throwable $e) {
@@ -616,7 +620,8 @@ class Telescope
     public static function hideRequestHeaders(array $headers)
     {
         static::$hiddenRequestHeaders = array_merge(
-            static::$hiddenRequestHeaders, $headers
+            static::$hiddenRequestHeaders,
+            $headers
         );
 
         return new static;
@@ -631,7 +636,8 @@ class Telescope
     public static function hideRequestParameters(array $attributes)
     {
         static::$hiddenRequestParameters = array_merge(
-            static::$hiddenRequestParameters, $attributes
+            static::$hiddenRequestParameters,
+            $attributes
         );
 
         return new static;
@@ -646,7 +652,8 @@ class Telescope
     public static function hideResponseParameters(array $attributes)
     {
         static::$hiddenResponseParameters = array_merge(
-            static::$hiddenResponseParameters, $attributes
+            static::$hiddenResponseParameters,
+            $attributes
         );
 
         return new static;
@@ -691,7 +698,7 @@ class Telescope
     }
 
     /**
-     * Configure Telescope to not register it's migrations.
+     * Configure Telescope to not register its migrations.
      *
      * @return static
      */
@@ -700,5 +707,23 @@ class Telescope
         static::$runsMigrations = false;
 
         return new static;
+    }
+
+    /**
+     * Check if assets are up-to-date.
+     *
+     * @return bool
+     *
+     * @throws \RuntimeException
+     */
+    public static function assetsAreCurrent()
+    {
+        $publishedPath = public_path('vendor/telescope/mix-manifest.json');
+
+        if (! File::exists($publishedPath)) {
+            throw new RuntimeException('The Telescope assets are not published. Please run: php artisan telescope:publish');
+        }
+
+        return File::get($publishedPath) === File::get(__DIR__.'/../public/mix-manifest.json');
     }
 }

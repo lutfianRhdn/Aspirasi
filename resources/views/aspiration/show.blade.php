@@ -2,6 +2,7 @@
 
 @section('content')
 <main>
+    {{-- {{ $notification }} --}}
 	<div class="container">
         <!-- tab -->
         <div class="tab-pane fade text-black show active" id="nav-home" role="tabpanel"

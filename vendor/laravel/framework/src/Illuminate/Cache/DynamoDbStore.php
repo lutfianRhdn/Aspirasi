@@ -2,14 +2,14 @@
 
 namespace Illuminate\Cache;
 
-use RuntimeException;
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
 use Aws\DynamoDb\DynamoDbClient;
-use Illuminate\Contracts\Cache\Store;
-use Illuminate\Support\InteractsWithTime;
-use Illuminate\Contracts\Cache\LockProvider;
 use Aws\DynamoDb\Exception\DynamoDbException;
+use Illuminate\Contracts\Cache\LockProvider;
+use Illuminate\Contracts\Cache\Store;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\InteractsWithTime;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 class DynamoDbStore implements LockProvider, Store
 {
@@ -391,7 +391,7 @@ class DynamoDbStore implements LockProvider, Store
      */
     public function forever($key, $value)
     {
-        return $this->put($key, $value, now()->addYears(5)->getTimestamp());
+        return $this->put($key, $value, Carbon::now()->addYears(5)->getTimestamp());
     }
 
     /**
@@ -443,6 +443,8 @@ class DynamoDbStore implements LockProvider, Store
      * Remove all items from the cache.
      *
      * @return bool
+     *
+     * @throws \RuntimeException
      */
     public function flush()
     {

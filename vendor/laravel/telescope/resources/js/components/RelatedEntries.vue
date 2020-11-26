@@ -137,8 +137,8 @@
 
             queriesSummary() {
                 return {
-                    time: _.reduce(this.queries, (time, q) => { return time + parseFloat(q.content.time) }, 0.00),
-                    duplicated: this.queries.length - _.size(_.groupBy(this.queries, 'family_hash')),
+                    time: _.reduce(this.queries, (time, q) => { return time + parseFloat(q.content.time) }, 0.00).toFixed(2),
+                    duplicated: this.queries.length - _.size(_.groupBy(this.queries, (q) => { return q.content.hash })),
                 };
             },
 
@@ -254,7 +254,7 @@
                 <thead>
                 <tr>
                     <th>Query<br/><small>{{ queries.length }} queries, {{ queriesSummary.duplicated }} of which are duplicated.</small></th>
-                    <th>Duration<br/><small>{{ queriesSummary.duplicated }} ms</small></th>
+                    <th>Duration<br/><small>{{ queriesSummary.time }}ms</small></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -552,18 +552,21 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Path</th>
+                    <th>Composers</th>
                     <th></th>
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr v-for="entry in views">
-                    <td class="table-fit">
-                        {{entry.content.name}}
+                    <td>
+                        {{entry.content.name}} <br/>
+                        <small class="text-muted">{{truncate(entry.content.path, 100)}}</small>
                     </td>
 
-                    <td :title="entry.content.path">{{truncate(entry.content.path, 100)}}</td>
+                    <td class="table-fit">
+                        {{entry.content.composers ? entry.content.composers.length : 0}}
+                    </td>
 
                     <td class="table-fit">
                         <router-link :to="{name:'view-preview', params:{id: entry.id}}" class="control-action">

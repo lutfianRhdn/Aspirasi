@@ -2,12 +2,12 @@
 
 namespace Illuminate\Queue\Failed;
 
-use Exception;
-use DateTimeInterface;
-use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
 use Aws\DynamoDb\DynamoDbClient;
+use DateTimeInterface;
+use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
 
 class DynamoDbFailedJobProvider implements FailedJobProviderInterface
 {
@@ -165,6 +165,8 @@ class DynamoDbFailedJobProvider implements FailedJobProviderInterface
      * Flush all of the failed jobs from storage.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function flush()
     {

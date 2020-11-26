@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light  shadow">
-
-    <!-- for admin to toggle sidebar -->
+{{-- @foreach ($notifications as $a)
+    {{$a}}
+@endforeach --}}
+{{-- {{$notifications->type}}     --}}
+<!-- for admin to toggle sidebar -->
     @can('isAdmin', auth()->user() )
     <div id="menu-toggle" class="d-flex mr-4 ml-2 menu-toggle flex-row ">
         {{ request()->segment(1) == 'admin' ? '>>' : '' }} </div>
@@ -44,10 +47,32 @@
         <!-- end nav left -->
 
         <!-- nav right -->
-        <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center justify-content-between ">
 
             @if(auth()->check())
+<div class="d-flex ">
+
+            <div class="dropdown">
+  <i class="dropdown-toggle dropdown-toggle-hide far fa-bell" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  </i>
+
+  <div class="dropdown-menu dropdown-menu-md-right  dropdown-menu-sm-left " aria-labelledby="dropdownMenuLink">
+      @foreach (auth()->user()->notifications as $notification)
+          @if ($notification->unread())
+          @php
+              $notif =   json_decode($notification);
+          @endphp
+  <a class="dropdown-item" href="{{ route('aspirations.show',$notif->data->aspiration_id) }}">{{ $notif->data->message }}</a>
+          
+          @endif
+      @endforeach
+  </div>
+</div>
             <!-- search button -->
+{{--             
+            @if (auth()->user()->notifications)
+                
+            @endif --}}
             <div class="dropdown ">
                 <i class="dropdown-toggle dropdown-toggle-hide fas fa-search" id="dropdownMenuButton"
                     data-toggle="dropdown">
@@ -73,6 +98,8 @@
                 </div>
             </div>
             <!-- end search button -->
+</div>
+
             @endif
 
             <!-- login and user profile -->

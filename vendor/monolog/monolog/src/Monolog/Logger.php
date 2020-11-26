@@ -140,6 +140,8 @@ class Logger implements LoggerInterface, ResettableInterface
     protected $exceptionHandler;
 
     /**
+     * @psalm-param array<callable(array): array> $processors
+     *
      * @param string             $name       The logging channel, a simple descriptive name that is attached to all log records
      * @param HandlerInterface[] $handlers   Optional stack of handlers, the first one in the array is called first, etc.
      * @param callable[]         $processors Optional array of processors
@@ -310,7 +312,7 @@ class Logger implements LoggerInterface, ResettableInterface
 
         try {
             foreach ($this->processors as $processor) {
-                $record = call_user_func($processor, $record);
+                $record = $processor($record);
             }
 
             // advance the array pointer to the first handler that will handle this record
@@ -408,8 +410,11 @@ class Logger implements LoggerInterface, ResettableInterface
     public static function toMonologLevel($level): int
     {
         if (is_string($level)) {
-            if (defined(__CLASS__.'::'.strtoupper($level))) {
-                return constant(__CLASS__.'::'.strtoupper($level));
+            // Contains chars of all log levels and avoids using strtoupper() which may have
+            // strange results depending on locale (for example, "i" will become "İ" in Turkish locale)
+            $upper = strtr($level, 'abcdefgilmnortuwy', 'ABCDEFGILMNORTUWY');
+            if (defined(__CLASS__.'::'.$upper)) {
+                return constant(__CLASS__ . '::' . $upper);
             }
 
             throw new InvalidArgumentException('Level "'.$level.'" is not defined, use one of: '.implode(', ', array_keys(static::$levels)));
@@ -605,6 +610,6 @@ class Logger implements LoggerInterface, ResettableInterface
             throw $e;
         }
 
-        call_user_func($this->exceptionHandler, $e, $record);
+        ($this->exceptionHandler)($e, $record);
     }
 }

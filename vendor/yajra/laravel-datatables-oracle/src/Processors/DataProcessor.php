@@ -2,7 +2,9 @@
 
 namespace Yajra\DataTables\Processors;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
+use Yajra\DataTables\Contracts\Formatter;
 use Yajra\DataTables\Utilities\Helper;
 
 class DataProcessor
@@ -83,6 +85,7 @@ class DataProcessor
         $this->includeIndex  = $columnDef['index'];
         $this->rawColumns    = $columnDef['raw'];
         $this->makeHidden    = $columnDef['hidden'];
+        $this->makeVisible   = $columnDef['visible'];
         $this->templates     = $templates;
         $this->start         = $start;
     }
@@ -99,7 +102,7 @@ class DataProcessor
         $indexColumn  = config('datatables.index_column', 'DT_RowIndex');
 
         foreach ($this->results as $row) {
-            $data  = Helper::convertToArray($row, ['hidden' => $this->makeHidden]);
+            $data  = Helper::convertToArray($row, ['hidden' => $this->makeHidden, 'visible' => $this->makeVisible]);
             $value = $this->addColumns($data, $row);
             $value = $this->editColumns($value, $row);
             $value = $this->setupRowVariables($value, $row);
@@ -125,9 +128,16 @@ class DataProcessor
      */
     protected function addColumns($data, $row)
     {
-        foreach ($this->appendColumns as $key => $value) {
-            $value['content'] = Helper::compileContent($value['content'], $data, $row);
-            $data             = Helper::includeInArray($value, $data);
+        foreach ($this->appendColumns as $value) {
+            if ($value['content'] instanceof Formatter) {
+                $column = str_replace('_formatted', '', $value['name']);
+
+                $value['content'] = $value['content']->format($data[$column], $row);
+            } else {
+                $value['content'] = Helper::compileContent($value['content'], $data, $row);
+            }
+
+            $data = Helper::includeInArray($value, $data);
         }
 
         return $data;
@@ -252,7 +262,7 @@ class DataProcessor
     }
 
     /**
-     * Escape all values of row.
+     * Escape all string or Htmlable values of row.
      *
      * @param array $row
      * @return array
@@ -262,7 +272,7 @@ class DataProcessor
         $arrayDot = array_filter(Arr::dot($row));
         foreach ($arrayDot as $key => $value) {
             if (! in_array($key, $this->rawColumns)) {
-                $arrayDot[$key] = e($value);
+                $arrayDot[$key] = (is_string($value) || $value instanceof Htmlable) ? e($value) : $value;
             }
         }
 

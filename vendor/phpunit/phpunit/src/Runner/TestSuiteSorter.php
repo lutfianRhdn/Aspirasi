@@ -202,7 +202,10 @@ final class TestSuiteSorter
         }
 
         if ($resolveDependencies && !($suite instanceof DataProviderTestSuite) && $this->suiteOnlyContainsTests($suite)) {
-            $suite->setTests($this->resolveDependencies($suite->tests()));
+            /** @var TestCase[] $tests */
+            $tests = $suite->tests();
+
+            $suite->setTests($this->resolveDependencies($tests));
         }
     }
 
@@ -217,8 +220,8 @@ final class TestSuiteSorter
             $testname = self::getTestSorterUID($test);
 
             if (!isset($this->defectSortOrder[$testname])) {
-                $this->defectSortOrder[$testname]        = self::DEFECT_SORT_WEIGHT[$this->cache->getState($testname)];
-                $max                                     = \max($max, $this->defectSortOrder[$testname]);
+                $this->defectSortOrder[$testname] = self::DEFECT_SORT_WEIGHT[$this->cache->getState($testname)];
+                $max                              = \max($max, $this->defectSortOrder[$testname]);
             }
         }
 

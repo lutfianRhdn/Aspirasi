@@ -17,7 +17,6 @@ use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestSuite;
-use PHPUnit\Runner\PhptTestCase;
 use PHPUnit\Runner\StandardTestSuiteLoader;
 use PHPUnit\Runner\TestSuiteLoader;
 use PHPUnit\Runner\TestSuiteSorter;
@@ -32,7 +31,6 @@ use PHPUnit\Util\Printer;
 use PHPUnit\Util\TestDox\CliTestDoxPrinter;
 use PHPUnit\Util\TextTestListRenderer;
 use PHPUnit\Util\XmlTestListRenderer;
-use ReflectionClass;
 use SebastianBergmann\FileIterator\Facade as FileIteratorFacade;
 
 use Throwable;
@@ -148,6 +146,11 @@ class Command
     ];
 
     /**
+     * @var @psalm-var list<string>
+     */
+    private $warnings = [];
+
+    /**
      * @var bool
      */
     private $versionStringPrinted = false;
@@ -198,7 +201,7 @@ class Command
         unset($this->arguments['test'], $this->arguments['testFile']);
 
         try {
-            $result = $runner->doRun($suite, $this->arguments, $exit);
+            $result = $runner->doRun($suite, $this->arguments, $this->warnings, $exit);
         } catch (Exception $e) {
             print $e->getMessage() . \PHP_EOL;
         }
@@ -274,7 +277,7 @@ class Command
     protected function handleArguments(array $argv): void
     {
         try {
-            $this->options = Getopt::getopt(
+            $this->options = Getopt::parse(
                 $argv,
                 'd:c:hv',
                 \array_keys($this->longOptions)
@@ -382,6 +385,7 @@ class Command
                 case 'h':
                 case '--help':
                     $this->showHelp();
+
                     exit(TestRunner::SUCCESS_EXIT);
 
                     break;
@@ -664,6 +668,7 @@ class Command
 
                 case '--version':
                     $this->printVersionString();
+
                     exit(TestRunner::SUCCESS_EXIT);
 
                     break;
@@ -770,12 +775,24 @@ class Command
                     }
 
                     if (isset($handler) && \is_callable([$this, $handler])) {
-                        $this->$handler($option[1]);
+                        $this->{$handler}($option[1]);
                     }
             }
         }
 
         $this->handleCustomTestSuite();
+
+        if (!isset($this->arguments['testSuffixes'])) {
+            $this->arguments['testSuffixes'] = ['Test.php', '.phpt'];
+        }
+
+        if (isset($this->options[1][0]) &&
+            \substr($this->options[1][0], -5, 5) !== '.phpt' &&
+            \substr($this->options[1][0], -4, 4) !== '.php' &&
+            \substr($this->options[1][0], -1, 1) !== '/' &&
+            !\is_dir($this->options[1][0])) {
+            $this->warnings[] = 'Invocation with class name is deprecated';
+        }
 
         if (!isset($this->arguments['test'])) {
             if (isset($this->options[1][0])) {
@@ -800,14 +817,19 @@ class Command
 
             if (isset($this->arguments['test']) &&
                 \is_file($this->arguments['test']) &&
+                \strrpos($this->arguments['test'], '.') !== false &&
                 \substr($this->arguments['test'], -5, 5) !== '.phpt') {
                 $this->arguments['testFile'] = \realpath($this->arguments['test']);
                 $this->arguments['test']     = \substr($this->arguments['test'], 0, \strrpos($this->arguments['test'], '.'));
             }
-        }
 
-        if (!isset($this->arguments['testSuffixes'])) {
-            $this->arguments['testSuffixes'] = ['Test.php', '.phpt'];
+            if (isset($this->arguments['test']) &&
+                \is_string($this->arguments['test']) &&
+                \substr($this->arguments['test'], -5, 5) === '.phpt') {
+                $suite = new TestSuite;
+                $suite->addTestFile($this->arguments['test']);
+                $this->arguments['test'] = $suite;
+            }
         }
 
         if (isset($includePath)) {
@@ -852,6 +874,7 @@ class Command
                 );
             } catch (Throwable $t) {
                 print $t->getMessage() . \PHP_EOL;
+
                 exit(TestRunner::FAILURE_EXIT);
             }
 
@@ -921,15 +944,9 @@ class Command
             $this->arguments['printer'] = $this->handlePrinter($this->arguments['printer']);
         }
 
-        if (isset($this->arguments['test']) && \is_string($this->arguments['test']) && \substr($this->arguments['test'], -5, 5) === '.phpt') {
-            $test = new PhptTestCase($this->arguments['test']);
-
-            $this->arguments['test'] = new TestSuite;
-            $this->arguments['test']->addTest($test);
-        }
-
         if (!isset($this->arguments['test'])) {
             $this->showHelp();
+
             exit(TestRunner::EXCEPTION_EXIT);
         }
     }
@@ -955,7 +972,8 @@ class Command
 
         if (\class_exists($loaderClass, false)) {
             try {
-                $class = new ReflectionClass($loaderClass);
+                $class = new \ReflectionClass($loaderClass);
+                // @codeCoverageIgnoreStart
             } catch (\ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
@@ -963,6 +981,7 @@ class Command
                     $e
                 );
             }
+            // @codeCoverageIgnoreEnd
 
             if ($class->implementsInterface(TestSuiteLoader::class) && $class->isInstantiable()) {
                 $object = $class->newInstance();
@@ -1018,13 +1037,15 @@ class Command
         }
 
         try {
-            $class = new ReflectionClass($printerClass);
+            $class = new \ReflectionClass($printerClass);
+            // @codeCoverageIgnoreStart
         } catch (\ReflectionException $e) {
             throw new Exception(
                 $e->getMessage(),
                 (int) $e->getCode(),
                 $e
             );
+            // @codeCoverageIgnoreEnd
         }
 
         if (!$class->implementsInterface(TestListener::class)) {
@@ -1308,7 +1329,7 @@ class Command
                     break;
 
                 default:
-                    $this->exitWithErrorMessage("unrecognized --order-by option: $order");
+                    $this->exitWithErrorMessage("unrecognized --order-by option: {$order}");
             }
         }
     }

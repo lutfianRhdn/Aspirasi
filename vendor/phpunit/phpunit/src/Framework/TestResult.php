@@ -301,7 +301,7 @@ final class TestResult implements Countable
         }
 
         foreach ($this->listeners as $listener) {
-            $listener->$notifyMethod($test, $t, $time);
+            $listener->{$notifyMethod}($test, $t, $time);
         }
 
         $this->lastTestFailed = true;
@@ -368,7 +368,7 @@ final class TestResult implements Countable
         }
 
         foreach ($this->listeners as $listener) {
-            $listener->$notifyMethod($test, $e, $time);
+            $listener->{$notifyMethod}($test, $e, $time);
         }
 
         $this->lastTestFailed = true;
@@ -859,6 +859,7 @@ final class TestResult implements Countable
             $test->getNumAssertions() == 0) {
             try {
                 $reflected = new \ReflectionClass($test);
+                // @codeCoverageIgnoreStart
             } catch (\ReflectionException $e) {
                 throw new Exception(
                     $e->getMessage(),
@@ -866,12 +867,14 @@ final class TestResult implements Countable
                     $e
                 );
             }
+            // @codeCoverageIgnoreEnd
 
             $name = $test->getName(false);
 
             if ($name && $reflected->hasMethod($name)) {
                 try {
                     $reflected = $reflected->getMethod($name);
+                    // @codeCoverageIgnoreStart
                 } catch (\ReflectionException $e) {
                     throw new Exception(
                         $e->getMessage(),
@@ -879,6 +882,7 @@ final class TestResult implements Countable
                         $e
                     );
                 }
+                // @codeCoverageIgnoreEnd
             }
 
             $this->addFailure(
@@ -1162,6 +1166,11 @@ final class TestResult implements Countable
     public function wasSuccessfulIgnoringWarnings(): bool
     {
         return empty($this->errors) && empty($this->failures);
+    }
+
+    public function wasSuccessfulAndNoTestIsRiskyOrSkippedOrIncomplete(): bool
+    {
+        return $this->wasSuccessful() && $this->allHarmless() && $this->allCompletelyImplemented() && $this->noneSkipped();
     }
 
     /**

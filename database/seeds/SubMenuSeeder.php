@@ -60,3 +60,4 @@ class SubMenuSeeder extends Seeder
 		}
 	}
 }
+

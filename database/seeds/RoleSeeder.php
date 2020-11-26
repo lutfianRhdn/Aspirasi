@@ -21,11 +21,8 @@ class RoleSeeder extends Seeder
         		'role' => 'user',
         	]
         ];
-
         foreach($roles as $role) {
-
     	    Role::create($role);
-        	
         }
     }
 }

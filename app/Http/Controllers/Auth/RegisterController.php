@@ -66,10 +66,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         // profile_image
-        if(request()->hasFile('profile_image')){
+        if (request()->hasFile('profile_image')) {
             // filename with extension
             $fileNameWithExtension = $data['profile_image']->getClientOriginalName();
-            
+
             //file name
             $fileName = pathInfo($fileNameWithExtension, PATHINFO_FILENAME);
 
@@ -77,11 +77,10 @@ class RegisterController extends Controller
             $fileNameExtension = $data['profile_image']->getClientOriginalExtension();
 
             //store
-            $fileNameToStore = $fileName . time() . $fileNameExtension;
+            $fileNameToStore = $fileName . time() . '.' . $fileNameExtension;
 
-            $path = $data['profile_image']->storeAs('public/profile_images' , $fileNameToStore);
-
-        }else{
+            $path = $data['profile_image']->storeAs('public/profile_images', $fileNameToStore);
+        } else {
             $fileNameToStore = 'default.jpg';
         }
 

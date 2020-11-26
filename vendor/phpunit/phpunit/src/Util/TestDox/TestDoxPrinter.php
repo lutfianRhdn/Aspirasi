@@ -181,7 +181,6 @@ class TestDoxPrinter extends ResultPrinter
     protected function registerTestResult(Test $test, ?\Throwable $t, int $status, float $time, bool $verbose): void
     {
         $testName = TestSuiteSorter::getTestSorterUID($test);
-        $status   = $status ?? BaseTestRunner::STATUS_UNKNOWN;
 
         $result = [
             'className'  => $this->formatClassName($test),
@@ -247,7 +246,7 @@ class TestDoxPrinter extends ResultPrinter
                 $flushed = false;
 
                 if (!$forceFlush && isset($this->originalExecutionOrder[$this->testFlushIndex])) {
-                    $result  = $this->getTestResultByName($this->originalExecutionOrder[$this->testFlushIndex]);
+                    $result = $this->getTestResultByName($this->originalExecutionOrder[$this->testFlushIndex]);
                 } else {
                     // This test(name) cannot found in original execution order,
                     // flush result to output stream right away

@@ -4,20 +4,20 @@ namespace Illuminate\Foundation\Console;
 
 use Closure;
 use Exception;
-use Throwable;
-use ReflectionClass;
+use Illuminate\Console\Application as Artisan;
+use Illuminate\Console\Command;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Console\Kernel as KernelContract;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
-use Illuminate\Console\Command;
-use Symfony\Component\Finder\Finder;
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Console\Application as Artisan;
-use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\Console\Kernel as KernelContract;
+use ReflectionClass;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Symfony\Component\Finder\Finder;
+use Throwable;
 
 class Kernel implements KernelContract
 {
@@ -38,7 +38,7 @@ class Kernel implements KernelContract
     /**
      * The Artisan application instance.
      *
-     * @var \Illuminate\Console\Application
+     * @var \Illuminate\Console\Application|null
      */
     protected $artisan;
 
@@ -277,7 +277,7 @@ class Kernel implements KernelContract
      * Queue the given console command.
      *
      * @param  string  $command
-     * @param  array   $parameters
+     * @param  array  $parameters
      * @return \Illuminate\Foundation\Bus\PendingDispatch
      */
     public function queue($command, array $parameters = [])
